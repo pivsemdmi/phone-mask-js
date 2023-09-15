@@ -1,5 +1,5 @@
 /*
-* @pivsemdmi/phone-mask-js | v1.2.1
+* @pivsemdmi/phone-mask-js | v1.2.2
 * by Semen Pivovarkin.
 */
 
@@ -197,6 +197,12 @@ class PhoneMask {
         this._bind();
     }
 
+    destroy() {
+        this._unbind();
+
+        this._el = undefined;
+    }
+
     /**
      * Updating mask and blur status
      */
@@ -246,6 +252,15 @@ class PhoneMask {
         this._el.addEventListener('focus', this._onFocus);
         this._el.addEventListener('blur', this._onBlur);
         this._el.addEventListener('input', this._onInput);
+    }
+
+    /**
+     * @private
+     */
+    _unbind() {
+        this._el.removeEventListener('focus', this._onFocus);
+        this._el.removeEventListener('blur', this._onBlur);
+        this._el.removeEventListener('input', this._onInput);
     }
 
     /**
