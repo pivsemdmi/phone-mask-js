@@ -1,5 +1,5 @@
 /*
-* @pivsemdmi/phone-mask-js | v1.2.2
+* @pivsemdmi/phone-mask-js | v1.2.3
 * by Semen Pivovarkin.
 */
 
@@ -53,6 +53,20 @@ class _PhoneMaskMagicOptions {
                 get: () => this._options[optionName],
             });
         });
+    }
+
+    /**
+     * @param {PhoneMaskOptions|{}} options
+     */
+    static override(options) {
+        Object.assign(
+            _PhoneMaskMagicOptions._baseOptions,
+            _PhoneMaskMagicOptions._initOptions(options)
+        );
+    }
+
+    static flush() {
+        _PhoneMaskMagicOptions.override(new PhoneMaskOptions());
     }
 
     /**

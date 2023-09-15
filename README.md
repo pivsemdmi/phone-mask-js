@@ -37,6 +37,30 @@ new PhoneMask('#phone', options);
 
 For destroy mask, call `phoneMask.destroy()` method
 
+### Override global options
+
+Call `PhoneMask.Options.override(options)` with new options
+
+For flush call `PhoneMask.Options.flush()`
+
+> Default params available in PhoneMaskOptions class
+
+For example:
+
+```javascript
+// Override
+PhoneMask.Options.override({
+    'caret': 'x',
+});
+
+new PhoneMask('#phone');
+
+// Flush
+PhoneMask.Options.flush();
+// or
+PhoneMask.Options.override(new PhoneMaskOptions());
+```
+
 ---
 
 Also see [demo/index.html](https://htmlpreview.github.io/?https://raw.githubusercontent.com/pivsemdmi/phone-mask-js/master/demo/index.html)
