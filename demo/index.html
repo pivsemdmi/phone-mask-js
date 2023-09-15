@@ -4,22 +4,125 @@
   <meta charset="UTF-8">
   <title>Demo phone mask</title>
 </head>
+
+<style>
+    h1 {
+        text-align: center;
+    }
+
+    table {
+        margin: 0 auto;
+    }
+
+    table,
+    table tr,
+    table tr > * {
+        border: 1px solid lightgray;
+        border-collapse: collapse;
+    }
+
+    table tr > * {
+        padding: 2px 4px;
+    }
+</style>
 <body>
-<label for="phone">Phone</label>
-<input type="tel" name="phone" id="phone" />
+
+<h1>Demo phone mask</h1>
+
+<table>
+  <tr><th>Empty</th><th>Prefill</th><th>Fill</th></tr>
+  <tr><th colspan="3">Default</th></tr>
+  <tr>
+    <td><input id="phone-default_1" value="" /></td>
+    <td><input id="phone-default_2" value="12345" /></td>
+    <td><input id="phone-default_3" value="1234567890" /></td>
+  </tr>
+  <tr><th colspan="3">Default with placeholder</th></tr>
+  <tr>
+    <td><input id="phone-placeholder_1" value="" placeholder="Empty field" /></td>
+    <td><input id="phone-placeholder_2" value="12345" placeholder="Empty field" /></td>
+    <td><input id="phone-placeholder_3" value="1234567890" placeholder="Empty field" /></td>
+  </tr>
+  <tr><th colspan="3">With personal caret</th></tr>
+  <tr>
+    <td><input id="phone-custom-caret_1" value="" /></td>
+    <td><input id="phone-custom-caret_2" value="12345" /></td>
+    <td><input id="phone-custom-caret_3" value="1234567890" /></td>
+  </tr>
+  <tr><th colspan="3">With space caret</th></tr>
+  <tr>
+    <td><input id="phone-space-caret_1" value="" /></td>
+    <td><input id="phone-space-caret_2" value="12345" /></td>
+    <td><input id="phone-space-caret_3" value="1234567890" /></td>
+  </tr>
+  <tr><th colspan="3">With two space carets</th></tr>
+  <tr>
+    <td><input id="phone-two-space-caret_1" value="" /></td>
+    <td><input id="phone-two-space-caret_2" value="12345" /></td>
+    <td><input id="phone-two-space-caret_3" value="1234567890" /></td>
+  </tr>
+  <tr><th colspan="3">Trimming</th></tr>
+  <tr>
+    <td><input id="phone-min_1" value="" /></td>
+    <td><input id="phone-min_2" value="12345" /></td>
+    <td><input id="phone-min_3" value="1234567890" /></td>
+  </tr>
+  <tr><th colspan="3">No blur</th></tr>
+  <tr>
+    <td><input id="phone-no-blur_1" value="" /></td>
+    <td><input id="phone-no-blur_2" value="12345" /></td>
+    <td><input id="phone-no-blur_3" value="1234567890" /></td>
+  </tr>
+  <tr><th colspan="3">Trimming, no blur</th></tr>
+  <tr>
+    <td><input id="phone-min-no-blur_1" value="" /></td>
+    <td><input id="phone-min-no-blur_2" value="12345" /></td>
+    <td><input id="phone-min-no-blur_3" value="1234567890" /></td>
+  </tr>
+</table>
+
 <script src="../phone-mask.js"></script>
 <script>
-    /** @type {HTMLInputElement} */
-    const input = document.querySelector('[name="phone"]');
-    input.value = '+7 (123) 456-78-90';
 
-    const mask = new PhoneMask('[name="phone"]', {
-        focus: false,
-        mask: '+7 (___) ___-__-__',
-        maskSoftCaret: '_',
+    /**
+     * @param {string[]} selectors
+     * @param options
+     */
+    function multiInit(selectors, options = {}) {
+        return selectors.map(function (selector) {
+            return new PhoneMask(selector, options);
+        })
+    }
+
+    multiInit(['#phone-default_1', '#phone-default_2', '#phone-default_3']);
+
+    multiInit(['#phone-placeholder_1', '#phone-placeholder_2', '#phone-placeholder_3']);
+
+    multiInit(['#phone-custom-caret_1', '#phone-custom-caret_2', '#phone-custom-caret_3'], {
+        'caret': '*',
     });
 
-    console.log(mask)
+    multiInit(['#phone-space-caret_1', '#phone-space-caret_2', '#phone-space-caret_3'], {
+        'caret': ' ',
+    });
+
+    multiInit(['#phone-two-space-caret_1', '#phone-two-space-caret_2', '#phone-two-space-caret_3'], {
+        'caret': '  ',
+    });
+
+    multiInit(['#phone-min_1', '#phone-min_2', '#phone-min_3'], {
+        'trimMask': true,
+    });
+
+    multiInit(['#phone-no-blur_1', '#phone-no-blur_2', '#phone-no-blur_3'], {
+        'blurMask': false,
+    });
+
+    multiInit(['#phone-min-no-blur_1', '#phone-min-no-blur_2', '#phone-min-no-blur_3'], {
+        'trimMask': true,
+        'blurMask': false,
+    });
+
 </script>
 </body>
 </html>

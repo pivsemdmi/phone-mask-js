@@ -1,12 +1,16 @@
+/*
+* @pivsemdmi/phone-mask-js | v1.1.0
+* by Semen Pivovarkin.
+*/
 class PhoneMask {
     /**
      * @type {{
      *   selector: string,
-     *   hideBlurMask: boolean,
-     *   showAllMask: boolean,
+     *   blurMask: boolean,
+     *   trimMask: boolean,
      *   mask: string,
-     *   maskSoftCaret: string,
-     *   maskUserCaret: string,
+     *   softCaret: string,
+     *   caret: string,
      *   maskMinLength: int,
      *   unmaskMaxLength: int,
      * }}
@@ -14,28 +18,34 @@ class PhoneMask {
      */
     _options = {
         selector: undefined,
-        showAllMask: true,
-        hideBlurMask: true,
-        focus: true,
+        trimMask: false,
+        blurMask: true,
         mask: '+7 (___) ___-__-__',
-        maskSoftCaret: '_',
-        maskUserCaret: '_',
+        softCaret: '_',
+        caret: '_',
         get maskMinLength() {
-            return Array.from(this.mask.matchAll(new RegExp(this.maskSoftCaret, 'g')))[0].index
+            return Array.from(this.mask.matchAll(new RegExp(this.softCaret, 'g')))[0].index
         },
         get unmaskMaxLength() {
-            return this.mask.match(new RegExp(this.maskSoftCaret, 'g')).length
+            return this.mask.match(new RegExp(this.softCaret, 'g')).length
         },
     }
+    /**
+     * @type {array}
+     * @private
+     */
     _fillingOptions = [
         'selector',
-        'showAllMask',
-        'hideBlurMask',
-        'focus',
+        'trimMask',
+        'blurMask',
         'mask',
-        'maskSoftCaret',
-        'maskUserCaret',
+        'softCaret',
+        'caret',
     ]
+    /**
+     * @type {object}
+     * @private
+     */
     _cache = {}
 
     /**
@@ -48,22 +58,33 @@ class PhoneMask {
     }
 
     /**
+     * @return {HTMLInputElement|Element}
+     */
+    get input() {
+        return this._el;
+    }
+
+    /**
      * @param {string} selector
      * @param {{
-     *   hideBlurMask: boolean,
-     *   showAllMask: boolean,
+     *   blurMask: boolean,
+     *   trimMask: boolean,
      *   mask: string,
-     *   maskSoftCaret: string,
-     *   maskUserCaret: string,
+     *   softCaret: string,
+     *   caret: string,
      * }} options
      */
     constructor(selector, options = {}) {
         this._initOptions(Object.assign(options, {selector}));
         this._initInput();
 
-        this.unmask = this._trimUnmask(this.unmask);
+        this.update();
     }
 
+    /**
+     * @param {object} options
+     * @private
+     */
     _initOptions(options) {
         const
             interestOptionsEntries = Object.entries(options)
@@ -73,25 +94,47 @@ class PhoneMask {
         this._options = Object.assign(this._options, interestOptions);
 
         // Validate soft caret
-        this._checkCaret(this._options.maskSoftCaret);
-        this._checkCaret(this._options.maskUserCaret);
+        this._checkNumberCaret(this._options.softCaret);
+        this._checkOneCharCaret(this._options.softCaret);
+        this._checkRegexCaret(this._options.softCaret);
+
+        // Validate user caret
+        this._checkNumberCaret(this._options.caret);
 
         // Validate phone mask
-        if ((new RegExp(`${this._options.maskSoftCaret}.*\\d`)).test(this._options.mask)) {
+        if ((new RegExp(`${this._options.softCaret}.*\\d`)).test(this._options.mask)) {
             throw new Error('Mask not support numbers after carets');
         }
-        if (!(new RegExp(`${this._options.maskSoftCaret}`)).test(this._options.mask)) {
+        if (!(new RegExp(`${this._options.softCaret}`)).test(this._options.mask)) {
             throw new Error('Soft caret not found in mask');
         }
     }
 
-    _checkCaret(caret) {
+    /**
+     * @param {string} caret
+     * @private
+     */
+    _checkNumberCaret(caret) {
         if (/\d/.test(caret)) {
             throw new Error('Caret not support number format');
         }
+    }
+
+    /**
+     * @param {string} caret
+     * @private
+     */
+    _checkOneCharCaret(caret) {
         if (caret.length !== 1) {
             throw new Error('Caret support only one symbol');
         }
+    }
+
+    /**
+     * @param {string} caret
+     * @private
+     */
+    _checkRegexCaret(caret) {
         try {
             (new RegExp(`${caret}`)).test(caret);
         } catch (e) {
@@ -99,6 +142,37 @@ class PhoneMask {
         }
     }
 
+    /**
+     * Updating mask and blur status
+     */
+    update() {
+        this.updateMask();
+        this.updateBlur();
+    }
+
+    /**
+     * Updating mask
+     */
+    updateMask() {
+        this.unmask = this._trimUnmask(this.unmask);
+    }
+
+    /**
+     * Updating blur
+     */
+    updateBlur() {
+        if (document.activeElement !== this._el) {
+            if (this._options.blurMask && !this.unmask) {
+                this._el.value = '';
+            }
+        } else {
+            this.unmask = this._trimUnmask(this.unmask);
+        }
+    }
+
+    /**
+     * @private
+     */
     _initInput() {
         this._el.type = 'tel';
 
@@ -107,40 +181,50 @@ class PhoneMask {
         this._el.addEventListener('input', this._onInput);
     }
 
-    _onFocus = () => {
-        if (!this._options.hideBlurMask) return;
+    /**
+     * @private
+     */
+    _onFocus = () => this.updateBlur()
 
-        if (!this.unmask) {
-            this.unmask = '';
-        }
-    }
+    /**
+     * @private
+     */
+    _onBlur = () => this.updateBlur()
 
-    _onBlur = () => {
-        if (!this._options.hideBlurMask) return;
-
-        if (!this.unmask) {
-            this._el.value = '';
-        }
-    }
-
+    /**
+     * @private
+     */
     _onInput = () => {
         const selectionNumberEnd = this._unmaskPos;
 
-        this.unmask = this._trimUnmask(this.unmask);
+        this.updateMask();
 
         this._unmaskPos = selectionNumberEnd;
     }
 
+    /**
+     * @param {string} unmask
+     * @return {string}
+     * @private
+     */
     _trimUnmask(unmask) {
         return unmask.length <= this._options.unmaskMaxLength ? unmask
             : unmask.replace(/^[87]/, '').slice(0, this._options.unmaskMaxLength);
     }
 
+    /**
+     * @return {int}
+     * @private
+     */
     get _unmaskPos() {
         const maskPos = this._el.selectionEnd;
         return this._el.value.slice(0, maskPos).replace(/\D/g, '').length - 1;
     }
 
+    /**
+     * @param {int} unmaskPos
+     * @private
+     */
     set _unmaskPos(unmaskPos) {
         const minMaskPos = this._options.maskMinLength;
         const maskPosMap = Array.from(this._el.value.matchAll(/\d/g))
@@ -150,12 +234,15 @@ class PhoneMask {
         this._el.selectionStart = this._el.selectionEnd = Math.max(minMaskPos, maskPosition);
     }
 
+    /**
+     * @return {string} value without mask
+     */
     get unmask() {
         const value = this._el.value;
         const clearPatternSearch = '^' + this._options.mask
-                .replace(new RegExp(`([^${this._options.maskSoftCaret}\\d])`, 'g'), '')
+                .replace(new RegExp(`([^${this._options.softCaret}\\d])`, 'g'), '')
                 .replace(/(\d)/g, '$1?')
-                .replace(new RegExp(`${this._options.maskSoftCaret}+`, 'g'), '(\\d*?)') + '$',
+                .replace(new RegExp(`${this._options.softCaret}+`, 'g'), '(\\d*?)') + '$',
             clearPattern = new RegExp(clearPatternSearch);
 
         const matches = clearPattern.exec(value.replace(/\D/g, ''));
@@ -165,6 +252,9 @@ class PhoneMask {
             .join('');
     }
 
+    /**
+     * @param {string} unmask value without mask
+     */
     set unmask(unmask) {
         const patternSearch = unmask.replace(/\d/g, '(\\d)'),
             pattern = new RegExp(patternSearch);
@@ -174,17 +264,17 @@ class PhoneMask {
         let replaceValue = this._options.mask;
 
         for (let i = 1; i <= count; i++) {
-            replaceValue = replaceValue.replace(new RegExp(this._options.maskSoftCaret), '$' + i)
+            replaceValue = replaceValue.replace(new RegExp(this._options.softCaret), '$' + i)
         }
 
         let maskedValue = unmask.replace(pattern, replaceValue);
 
-        if (!this._options.showAllMask) {
+        if (this._options.trimMask) {
             const minMaskLen = this._options.maskMinLength;
             const lastNumber = Array.from(maskedValue.matchAll(/\d/g)).reverse()[0].index + 1;
             maskedValue = maskedValue.slice(0, Math.max(minMaskLen, lastNumber));
-        } else if (this._options.maskSoftCaret !== this._options.maskUserCaret) {
-            maskedValue = maskedValue.replace(new RegExp(this._options.maskSoftCaret, 'g'), this._options.maskUserCaret);
+        } else if (this._options.softCaret !== this._options.caret) {
+            maskedValue = maskedValue.replace(new RegExp(this._options.softCaret, 'g'), this._options.caret);
         }
 
         this._el.value = maskedValue;
