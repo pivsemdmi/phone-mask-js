@@ -2,7 +2,19 @@
 
 Simple phone mask for Phone
 
-## How use
+## Include it
+
+After installing with npm, you could possibly do from index.html:
+```html
+<script src="./node_modules/@pivsemdmi/phone-mask-js/phone-mask.js"></script>
+```
+
+Use with webpack
+```js
+const PhoneMask = require('@pivsemdmi/phone-mask-js');
+```
+
+## How to use
 
 ```js
 new PhoneMask('#phone', options);
@@ -19,4 +31,5 @@ new PhoneMask('#phone', options);
 | caret     | `string` | `_`                  | Caret show for user. Support two and more char. Not support numbers |
 
 ## Detail work
-See `demo/index.html`
+
+See [demo/index.html](https://htmlpreview.github.io/?https://raw.githubusercontent.com/pivsemdmi/phone-mask-js/master/demo/index.html)

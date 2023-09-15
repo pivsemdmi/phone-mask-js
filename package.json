@@ -1,7 +1,7 @@
 {
   "name": "@pivsemdmi/phone-mask-js",
-  "version": "1.1.0",
-  "type": "module",
+  "version": "1.2.0",
+  "type": "commonjs",
   "description": "Simple phone mask for Phone",
   "main": "phone-mask.js",
   "scripts": {

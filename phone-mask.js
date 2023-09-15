@@ -1,5 +1,5 @@
 /*
-* @pivsemdmi/phone-mask-js | v1.1.0
+* @pivsemdmi/phone-mask-js | v1.2.0
 * by Semen Pivovarkin.
 */
 class PhoneMask {
@@ -279,4 +279,9 @@ class PhoneMask {
 
         this._el.value = maskedValue;
     }
+}
+
+// For webpack
+if (typeof module === 'object' && module.exports) {
+    module.exports = PhoneMask;
 }
