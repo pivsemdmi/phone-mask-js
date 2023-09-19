@@ -1,5 +1,5 @@
 /*
-* @pivsemdmi/phone-mask-js | v1.2.3
+* @pivsemdmi/phone-mask-js | v1.2.4
 * by Semen Pivovarkin.
 */
 
@@ -25,7 +25,7 @@ class _PhoneMaskMagicOptions {
      * @return {number}
      */
     get maskMinLength() {
-        return Array.from(this.mask.matchAll(new RegExp(this.softCaret, 'g')))[0].index
+        return this.mask.indexOf(this.softCaret);
     }
 
     /**
@@ -33,6 +33,14 @@ class _PhoneMaskMagicOptions {
      */
     get unmaskMaxLength() {
         return this.mask.match(new RegExp(this.softCaret, 'g')).length
+    }
+
+    /**
+     * @return {array}
+     */
+    get maskPosMap() {
+        return Array.from(this.mask.matchAll(new RegExp(this.softCaret, 'g')))
+            .map(({index}) => index);
     }
 
     /**
@@ -310,40 +318,18 @@ class PhoneMask {
     }
 
     /**
-     * @return {number}
-     * @private
-     */
-    get _unmaskPos() {
-        return this._el.value.slice(0, this._el.selectionEnd)
-            .replace(/\D/g, '').length - 1;
-    }
-
-    /**
-     * @param {number} unmaskPos
-     * @private
-     */
-    set _unmaskPos(unmaskPos) {
-        const
-            minMaskPos = this.options.maskMinLength,
-            maskPosMap = Array.from(this._el.value.matchAll(/\d/g))
-            .map(({index}) => index),
-            maskPosition = maskPosMap[Math.min(unmaskPos, maskPosMap.length - 1)] + 1 || 0;
-
-        this._el.selectionStart = this._el.selectionEnd = Math.max(minMaskPos, maskPosition);
-    }
-
-    /**
      * @return {string} value without mask
+     * @private
      */
-    get unmask() {
+    _cleanMask(maskValue) {
         const
-            value = this._el.value,
+            value = maskValue,
             clearPatternSearch = '^' + this.options.mask
                 .replace(new RegExp(`([^${this.options.softCaret}\\d])`, 'g'), '')
                 .replace(/(\d)/g, '$1?')
                 .replace(new RegExp(`${this.options.softCaret}+`, 'g'), '(\\d*?)') + '$',
             clearPattern = new RegExp(clearPatternSearch),
-            matches = clearPattern.exec(value.replace(/\D/g, ''));
+            matches = clearPattern.exec(value.replace(/\D/g, ''))
 
         return matches && matches.slice(1)
             .map(val => val.replace(/\D/g, ''))
@@ -352,8 +338,9 @@ class PhoneMask {
 
     /**
      * @param {string} unmask value without mask
+     * @private
      */
-    set unmask(unmask) {
+    _applyMask(unmask) {
         const
             patternSearch = unmask.replace(/\d/g, '(\\d)'),
             pattern = new RegExp(patternSearch),
@@ -376,7 +363,48 @@ class PhoneMask {
             maskedValue = maskedValue.replace(new RegExp(this.options.softCaret, 'g'), this.options.caret);
         }
 
-        this._el.value = maskedValue;
+        return maskedValue;
+    }
+
+    /**
+     * @return {number}
+     * @private
+     */
+    get _unmaskPos() {
+        const
+            maskValueToCaret = this._el.value.slice(0, this._el.selectionEnd),
+            unmaskValueToCaret = this._cleanMask(maskValueToCaret);
+
+        return unmaskValueToCaret.length;
+    }
+
+    /**
+     * @param {number} unmaskPos
+     * @private
+     */
+    set _unmaskPos(unmaskPos) {
+        const
+            {maskPosMap} = this.options,
+            maskMaxAllowedPos = this.unmask.length,
+            unmaskPosInMap = Math.min(Math.max(0, Math.min(unmaskPos, maskMaxAllowedPos) - 1)),
+            unmaskPosMapCorrect = Math.max(0, Math.min(1, unmaskPos)),
+            maskPosition = maskPosMap[unmaskPosInMap] + unmaskPosMapCorrect;
+
+        this._el.selectionStart = this._el.selectionEnd = maskPosition;
+    }
+
+    /**
+     * @return {string} value without mask
+     */
+    get unmask() {
+        return this._cleanMask(this._el.value);
+    }
+
+    /**
+     * @param {string} unmask value without mask
+     */
+    set unmask(unmask) {
+        this._el.value = this._applyMask(unmask);
     }
 }
 
