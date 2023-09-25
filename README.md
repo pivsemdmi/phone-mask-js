@@ -77,4 +77,4 @@ PhoneMask.Options.override(new PhoneMaskOptions());
 
 ---
 
-Also see [demo/index.html](https://htmlpreview.github.io/?https://raw.githubusercontent.com/pivsemdmi/phone-mask-js/master/demo/index.html)
+Also see DEMO [index.html](https://pivsemdmi.github.io/phone-mask-js/)
