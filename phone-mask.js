@@ -1,10 +1,11 @@
 /*
-* @pivsemdmi/phone-mask-js | v1.2.5
+* @pivsemdmi/phone-mask-js | v1.2.6
 * by Semen Pivovarkin.
 */
 
 class PhoneMaskOptions {
     trimMask = false
+    trimUnmask = true
     blurMask = true
     mask = '+7 (___) ___-__-__'
     softCaret = '_'
@@ -349,9 +350,17 @@ class PhoneMask {
      * @private
      */
     _trimUnmask(unmask) {
-        return unmask.length <= this.options.unmaskMaxLength ? unmask
-            : unmask.replace(/^[87]/, '')
-                .slice(0, this.options.unmaskMaxLength);
+        if (unmask.length <= this.options.unmaskMaxLength) {
+            return unmask;
+        }
+
+        let newUnmask = unmask;
+
+        if (this.options.trimUnmask) {
+            newUnmask = unmask.replace(/^[87]/, '');
+        }
+
+        return newUnmask.slice(0, this.options.unmaskMaxLength);
     }
 
     /**

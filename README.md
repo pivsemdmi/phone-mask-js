@@ -38,13 +38,14 @@ new PhoneMask('#phone', options);
 
 ### Options
 
-| Name      | Type      | Default              | Description                                                         |
-|-----------|-----------|----------------------|---------------------------------------------------------------------|
-| blurMask  | `boolean` | `true`               | Hide mask when empty value and blur                                 |
-| trimMask  | `boolean` | `false`              | Triming mask. See demo `Trimming`                                   |
-| mask      | `string`  | `+7 (___) ___-__-__` | Em-m... This is mask =D                                             |
-| softCaret | `string`  | `_`                  | Caret from mask option                                              |
-| caret     | `string`  | `_`                  | Caret show for user. Support two and more char. Not support numbers |
+| Name       | Type      | Default              | Description                                                         |
+|------------|-----------|----------------------|---------------------------------------------------------------------|
+| blurMask   | `boolean` | `true`               | Hide mask when empty value and blur                                 |
+| trimUnmask | `boolean` | `true`               | Triming mask. See demo `Trimming`                                   |
+| trimMask   | `boolean` | `false`              | Triming unmaskee phone number. See demo example in features         |
+| mask       | `string`  | `+7 (___) ___-__-__` | Em-m... This is mask =D                                             |
+| softCaret  | `string`  | `_`                  | Caret from mask option                                              |
+| caret      | `string`  | `_`                  | Caret show for user. Support two and more char. Not support numbers |
 
 ### Destroy mask
 
