@@ -2,6 +2,19 @@
 
 Simple phone mask for Phone
 
+## Features
+
+* Simple use
+* Global override options
+* Correcting caret position
+* Trimming [87] numbers in beginning of unmasked phone number when overflowed
+
+For example:
+
+> `+7 (871) 234-56-789` -> `+7 (712) 345-67-89`
+>
+> `+7 (712) 345-67-890` -> `+7 (123) 456-78-90`
+
 ## Include it
 
 After installing with npm, you could possibly do from index.html:
