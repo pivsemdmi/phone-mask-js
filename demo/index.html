@@ -1,128 +1,274 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-bs-theme="dark">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Demo phone mask</title>
 </head>
 
-<style>
-    h1 {
-        text-align: center;
-    }
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" integrity="sha512-b2QcS5SsA8tZodcDtGRELiGv5SaKSk1vDHDaQRda0htPYWZ6046lr3kJ5bAAQdpV2mmA/4v0wQF9MyU6/pDIAg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
-    table {
-        margin: 0 auto;
-    }
-
-    table,
-    table tr,
-    table tr > * {
-        border: 1px solid lightgray;
-        border-collapse: collapse;
-    }
-
-    table tr > * {
-        padding: 2px 4px;
-    }
-</style>
-<body>
-
-<h1>Demo for <a href="https://github.com/pivsemdmi/phone-mask-js">pivsemdmi/phone-mask-js</a></h1>
-
-<table>
-  <tr><th>Empty</th><th>Prefill</th><th>Fill</th></tr>
-  <tr><th colspan="3">Default</th></tr>
-  <tr>
-    <td><input id="phone-default_1" value="" /></td>
-    <td><input id="phone-default_2" value="12345" /></td>
-    <td><input id="phone-default_3" value="1234567890" /></td>
-  </tr>
-  <tr><th colspan="3">Default with placeholder</th></tr>
-  <tr>
-    <td><input id="phone-placeholder_1" value="" placeholder="Empty field" /></td>
-    <td><input id="phone-placeholder_2" value="12345" placeholder="Empty field" /></td>
-    <td><input id="phone-placeholder_3" value="1234567890" placeholder="Empty field" /></td>
-  </tr>
-  <tr><th colspan="3">With personal caret</th></tr>
-  <tr>
-    <td><input id="phone-custom-caret_1" value="" /></td>
-    <td><input id="phone-custom-caret_2" value="12345" /></td>
-    <td><input id="phone-custom-caret_3" value="1234567890" /></td>
-  </tr>
-  <tr><th colspan="3">With space caret</th></tr>
-  <tr>
-    <td><input id="phone-space-caret_1" value="" /></td>
-    <td><input id="phone-space-caret_2" value="12345" /></td>
-    <td><input id="phone-space-caret_3" value="1234567890" /></td>
-  </tr>
-  <tr><th colspan="3">With two space carets</th></tr>
-  <tr>
-    <td><input id="phone-two-space-caret_1" value="" /></td>
-    <td><input id="phone-two-space-caret_2" value="12345" /></td>
-    <td><input id="phone-two-space-caret_3" value="1234567890" /></td>
-  </tr>
-  <tr><th colspan="3">Trimming</th></tr>
-  <tr>
-    <td><input id="phone-min_1" value="" /></td>
-    <td><input id="phone-min_2" value="12345" /></td>
-    <td><input id="phone-min_3" value="1234567890" /></td>
-  </tr>
-  <tr><th colspan="3">No blur</th></tr>
-  <tr>
-    <td><input id="phone-no-blur_1" value="" /></td>
-    <td><input id="phone-no-blur_2" value="12345" /></td>
-    <td><input id="phone-no-blur_3" value="1234567890" /></td>
-  </tr>
-  <tr><th colspan="3">Trimming, no blur</th></tr>
-  <tr>
-    <td><input id="phone-min-no-blur_1" value="" /></td>
-    <td><input id="phone-min-no-blur_2" value="12345" /></td>
-    <td><input id="phone-min-no-blur_3" value="1234567890" /></td>
-  </tr>
-</table>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/atom-one-dark.min.css">
 
 <script src="../phone-mask.js"></script>
 <script>
-
     /**
-     * @param {string[]} selectors
-     * @param options
+     * @param {string} selectorFamily
+     * @param {PhoneMaskOptions|{}} options
      */
-    function multiInit(selectors, options = {}) {
+    function multiInit(selectorFamily, options = {}) {
+        const selectors = [1, 2, 3].map(id => `${selectorFamily}_${id}`);
+
         return selectors.map(function (selector) {
             return new PhoneMask(selector, options);
         })
     }
-
-    multiInit(['#phone-default_1', '#phone-default_2', '#phone-default_3']);
-
-    multiInit(['#phone-placeholder_1', '#phone-placeholder_2', '#phone-placeholder_3']);
-
-    multiInit(['#phone-custom-caret_1', '#phone-custom-caret_2', '#phone-custom-caret_3'], {
-        'caret': '*',
-    });
-
-    multiInit(['#phone-space-caret_1', '#phone-space-caret_2', '#phone-space-caret_3'], {
-        'caret': ' ',
-    });
-
-    multiInit(['#phone-two-space-caret_1', '#phone-two-space-caret_2', '#phone-two-space-caret_3'], {
-        'caret': '  ',
-    });
-
-    multiInit(['#phone-min_1', '#phone-min_2', '#phone-min_3'], {
-        'trimMask': true,
-    });
-
-    multiInit(['#phone-no-blur_1', '#phone-no-blur_2', '#phone-no-blur_3'], {
-        'blurMask': false,
-    });
-
-    multiInit(['#phone-min-no-blur_1', '#phone-min-no-blur_2', '#phone-min-no-blur_3'], {
-        'trimMask': true,
-        'blurMask': false,
-    });
-
 </script>
+<body>
+
+<div class="container mb-5">
+  <div class="row">
+    <div class="col-12 col-lg-10 offset-lg-1 col-xl-8 offset-xl-2">
+      <h1 class="text-center mb-4">Demo page</h1>
+      <p class="text-center">Package <a href="https://github.com/pivsemdmi/phone-mask-js">pivsemdmi/phone-mask-js</a></p>
+
+      <h2>Examples of using</h2>
+
+      <hr>
+
+      <h3>Default</h3>
+      <div class="row mb-3 mb-md-4">
+        <div class="col-md-3 mb-2">
+          <div class="row row-cols-1 row-cols-sm-3 row-cols-md-1">
+            <div class="mb-1 mb-md-2"><input type="tel" class="form-control form-control-sm" id="phone-default_1" value="" /></div>
+            <div class="mb-1 mb-md-2"><input type="tel" class="form-control form-control-sm" id="phone-default_2" value="12345" /></div>
+            <div class="mb-1 mb-md-2"><input type="tel" class="form-control form-control-sm" id="phone-default_3" value="1234567890" /></div>
+          </div>
+        </div>
+        <div class="col-md-9">
+          <div class="row">
+            <pre><code class="language-html"><input type="tel" id="phone-default"></code></pre>
+            <pre><code class="language-js">new PhoneMask('#phone-default');</code></pre>
+          </div>
+        </div>
+      </div>
+      <script>
+          multiInit('#phone-default');
+      </script>
+
+      <h3>Default with placeholder</h3>
+      <div class="row mb-3 mb-md-4">
+        <div class="col-md-3 mb-2">
+          <div class="row row-cols-1 row-cols-sm-3 row-cols-md-1">
+            <div class="mb-1 mb-md-2"><input type="tel" class="form-control form-control-sm" id="phone-placeholder_1" value="" placeholder="Empty field" /></div>
+            <div class="mb-1 mb-md-2"><input type="tel" class="form-control form-control-sm" id="phone-placeholder_2" value="12345" placeholder="Empty field" /></div>
+            <div class="mb-1 mb-md-2"><input type="tel" class="form-control form-control-sm" id="phone-placeholder_3" value="1234567890" placeholder="Empty field" /></div>
+          </div>
+        </div>
+        <div class="col-md-9">
+          <pre><code class="language-html"><input type="tel" id="phone-placeholder" placeholder="Empty field"></code></pre>
+          <pre><code class="language-js">new PhoneMask('#phone-placeholder');</code></pre>
+        </div>
+      </div>
+      <script>
+          multiInit('#phone-placeholder');
+      </script>
+
+      <h3>Custom mask</h3>
+      <div class="row mb-3 mb-md-4">
+        <div class="col-md-3 mb-2">
+          <div class="row row-cols-1 row-cols-sm-3 row-cols-md-1">
+            <div class="mb-1 mb-md-2"><input type="tel" class="form-control form-control-sm" id="phone-mask_1" value="" /></div>
+            <div class="mb-1 mb-md-2"><input type="tel" class="form-control form-control-sm" id="phone-mask_2" value="12345" /></div>
+            <div class="mb-1 mb-md-2"><input type="tel" class="form-control form-control-sm" id="phone-mask_3" value="1234567890" /></div>
+          </div>
+        </div>
+        <div class="col-md-9">
+          <pre><code class="language-html"><input type="tel" id="phone-mask"></code></pre>
+          <pre><code class="language-js">new PhoneMask('#phone-mask', {
+  'mask': '8 ___ ___-__-__',
+});</code></pre>
+        </div>
+      </div>
+      <script>
+          multiInit('#phone-mask', {
+              'mask': '8 ___ ___-__-__',
+          });
+      </script>
+
+      <h3>With personal caret</h3>
+      <div class="row mb-3 mb-md-4">
+        <div class="col-md-3 mb-2">
+          <div class="row row-cols-1 row-cols-sm-3 row-cols-md-1">
+            <div class="mb-1 mb-md-2"><input type="tel" class="form-control form-control-sm" id="phone-caret_1" value="" /></div>
+            <div class="mb-1 mb-md-2"><input type="tel" class="form-control form-control-sm" id="phone-caret_2" value="12345" /></div>
+            <div class="mb-1 mb-md-2"><input type="tel" class="form-control form-control-sm" id="phone-caret_3" value="1234567890" /></div>
+          </div>
+        </div>
+        <div class="col-md-9">
+          <pre><code class="language-html"><input type="tel" id="phone-caret"></code></pre>
+          <pre><code class="language-js">new PhoneMask('#phone-caret', {
+  'caret': '*',
+});</code></pre>
+        </div>
+      </div>
+      <script>
+          multiInit('#phone-caret', {
+              'caret': '*',
+          });
+      </script>
+
+      <h3>With space caret</h3>
+      <div class="row mb-3 mb-md-4">
+        <div class="col-md-3 mb-2">
+          <div class="row row-cols-1 row-cols-sm-3 row-cols-md-1">
+            <div class="mb-1 mb-md-2"><input type="tel" class="form-control form-control-sm" id="phone-space_1" value="" /></div>
+            <div class="mb-1 mb-md-2"><input type="tel" class="form-control form-control-sm" id="phone-space_2" value="12345" /></div>
+            <div class="mb-1 mb-md-2"><input type="tel" class="form-control form-control-sm" id="phone-space_3" value="1234567890" /></div>
+          </div>
+        </div>
+        <div class="col-md-9">
+          <pre><code class="language-html"><input type="tel" id="phone-space"></code></pre>
+          <pre><code class="language-js">new PhoneMask('#phone-space', {
+  'caret': ' ',
+});</code></pre>
+        </div>
+      </div>
+      <script>
+          multiInit('#phone-space', {
+              'caret': ' ',
+          });
+      </script>
+
+      <h3>With two space carets</h3>
+      <div class="row mb-3 mb-md-4">
+        <div class="col-md-3 mb-2">
+          <div class="row row-cols-1 row-cols-sm-3 row-cols-md-1">
+            <div class="mb-1 mb-md-2"><input type="tel" class="form-control form-control-sm" id="phone-two-space_1" value="" /></div>
+            <div class="mb-1 mb-md-2"><input type="tel" class="form-control form-control-sm" id="phone-two-space_2" value="12345" /></div>
+            <div class="mb-1 mb-md-2"><input type="tel" class="form-control form-control-sm" id="phone-two-space_3" value="1234567890" /></div>
+          </div>
+        </div>
+        <div class="col-md-9">
+          <pre><code class="language-html"><input type="tel" id="phone-two-space"></code></pre>
+          <pre><code class="language-js">new PhoneMask('#phone-two-space', {
+  'caret': '  ',
+});</code></pre>
+        </div>
+      </div>
+      <script>
+          multiInit('#phone-two-space', {
+              'caret': '  ',
+          });
+      </script>
+
+      <h3>Trimming mask</h3>
+      <div class="row mb-3 mb-md-4">
+        <div class="col-md-3 mb-2">
+          <div class="row row-cols-1 row-cols-sm-3 row-cols-md-1">
+            <div class="mb-1 mb-md-2"><input type="tel" class="form-control form-control-sm" id="phone-min_1" value="" /></div>
+            <div class="mb-1 mb-md-2"><input type="tel" class="form-control form-control-sm" id="phone-min_2" value="12345" /></div>
+            <div class="mb-1 mb-md-2"><input type="tel" class="form-control form-control-sm" id="phone-min_3" value="1234567890" /></div>
+          </div>
+        </div>
+        <div class="col-md-9">
+          <pre><code class="language-html"><input type="tel" id="phone-min"></code></pre>
+          <pre><code class="language-js">new PhoneMask('#phone-min', {
+  'trimMask': true,
+});</code></pre>
+        </div>
+      </div>
+      <script>
+          multiInit('#phone-min', {
+              'trimMask': true,
+          });
+      </script>
+
+      <h3>No blur</h3>
+      <div class="row mb-3 mb-md-4">
+        <div class="col-md-3 mb-2">
+          <div class="row row-cols-1 row-cols-sm-3 row-cols-md-1">
+            <div class="mb-1 mb-md-2"><input type="tel" class="form-control form-control-sm" id="phone-no-blur_1" value="" /></div>
+            <div class="mb-1 mb-md-2"><input type="tel" class="form-control form-control-sm" id="phone-no-blur_2" value="12345" /></div>
+            <div class="mb-1 mb-md-2"><input type="tel" class="form-control form-control-sm" id="phone-no-blur_3" value="1234567890" /></div>
+          </div>
+        </div>
+        <div class="col-md-9">
+          <pre><code class="language-html"><input type="tel" id="phone-no-blur"></code></pre>
+          <pre><code class="language-js">new PhoneMask('#phone-no-blur', {
+  'blurMask': false,
+});</code></pre>
+        </div>
+      </div>
+      <script>
+          multiInit('#phone-no-blur', {
+              'blurMask': false,
+          });
+      </script>
+
+      <h3>Trimming mask, no blur</h3>
+      <div class="row mb-3 mb-md-4">
+        <div class="col-md-3 mb-2">
+          <div class="row row-cols-1 row-cols-sm-3 row-cols-md-1">
+            <div class="mb-1 mb-md-2"><input type="tel" class="form-control form-control-sm" id="phone-min-no-blur_1" value="" /></div>
+            <div class="mb-1 mb-md-2"><input type="tel" class="form-control form-control-sm" id="phone-min-no-blur_2" value="12345" /></div>
+            <div class="mb-1 mb-md-2"><input type="tel" class="form-control form-control-sm" id="phone-min-no-blur_3" value="1234567890" /></div>
+          </div>
+        </div>
+        <div class="col-md-9">
+          <pre><code class="language-html"><input type="tel" id="phone-min-no-blur"></code></pre>
+          <pre><code class="language-js">new PhoneMask('#phone-min-no-blur', {
+  'trimMask': true,
+  'blurMask': false,
+});</code></pre>
+        </div>
+      </div>
+      <script>
+          multiInit('#phone-min-no-blur', {
+              'trimMask': true,
+              'blurMask': false,
+          });
+      </script>
+
+      <h3>Strange mask, override global params</h3>
+      <div class="row mb-3 mb-md-4">
+        <div class="col-md-3 mb-2">
+          <div class="row row-cols-1 row-cols-sm-3 row-cols-md-1">
+            <div class="mb-1 mb-md-2"><input type="tel" class="form-control form-control-sm" id="phone-override_1" value="" /></div>
+            <div class="mb-1 mb-md-2"><input type="tel" class="form-control form-control-sm" id="phone-override_2" value="12345" /></div>
+            <div class="mb-1 mb-md-2"><input type="tel" class="form-control form-control-sm" id="phone-override_3" value="1234567890" /></div>
+          </div>
+        </div>
+        <div class="col-md-9">
+          <pre><code class="language-html"><input type="tel" id="phone-override"></code></pre>
+          <pre><code class="language-js">PhoneMask.Options.override({
+  'mask': '8-xxx_xxx_xx_xx',
+  'softCaret': 'x',
+  'caret': '_',
+});
+
+new PhoneMask('#phone-override');</code></pre>
+        </div>
+      </div>
+      <script>
+          PhoneMask.Options.override({
+              'mask': '8-xxx_xxx_xx_xx',
+              'softCaret': 'x',
+              'caret': '_',
+          });
+          multiInit('#phone-override');
+      </script>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+<script>
+    document.querySelectorAll("code").forEach(function(element) {
+        element.innerHTML = element.innerHTML.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+    });
+    hljs.highlightAll();
+</script>
+
 </body>
 </html>
