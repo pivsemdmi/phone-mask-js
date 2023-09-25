@@ -1,5 +1,5 @@
 /*
-* @pivsemdmi/phone-mask-js | v1.2.4
+* @pivsemdmi/phone-mask-js | v1.2.5
 * by Semen Pivovarkin.
 */
 
@@ -274,6 +274,8 @@ class PhoneMask {
         this._el.addEventListener('focus', this._onFocus);
         this._el.addEventListener('blur', this._onBlur);
         this._el.addEventListener('input', this._onInput);
+        this._el.addEventListener('mouseup', this._onMouseUp);
+        this._el.addEventListener('touchend', this._onMouseUp);
     }
 
     /**
@@ -283,12 +285,17 @@ class PhoneMask {
         this._el.removeEventListener('focus', this._onFocus);
         this._el.removeEventListener('blur', this._onBlur);
         this._el.removeEventListener('input', this._onInput);
+        this._el.removeEventListener('mouseup', this._onMouseUp);
+        this._el.removeEventListener('touchend', this._onMouseUp);
     }
 
     /**
      * @private
      */
-    _onFocus = () => this.updateBlur()
+    _onFocus = () => {
+        this.updateBlur();
+        this._correctPos();
+    }
 
     /**
      * @private
@@ -304,6 +311,36 @@ class PhoneMask {
         this.updateMask();
 
         this._unmaskPos = selectionNumberEnd;
+    }
+
+    /**
+     * @private
+     */
+    _onMouseUp = () => {
+        this._correctPos();
+    }
+
+    /**
+     * @private
+     */
+    _correctPos() {
+        const {
+            selectionStart,
+            selectionEnd,
+        } = this._el;
+
+        if (selectionStart !== selectionEnd) {
+            return;
+        }
+
+        const
+            allowRightPos = Array.from(this._el.value.matchAll(/\d/g)).at(-1)?.index + 1 || 0,
+            allowLeftPos = Math.max(this.options.mask.indexOf('_') || 0, 0),
+            newPos = Math.max(Math.min(selectionStart, allowRightPos), allowLeftPos);
+
+        if (selectionStart !== newPos) {
+            this._el.selectionStart = this._el.selectionEnd = newPos;
+        }
     }
 
     /**
