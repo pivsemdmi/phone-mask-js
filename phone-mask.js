@@ -1,5 +1,5 @@
 /*
-* @pivsemdmi/phone-mask-js | v1.2.6
+* @pivsemdmi/phone-mask-js | v1.2.7
 * by Semen Pivovarkin.
 */
 
@@ -336,7 +336,7 @@ class PhoneMask {
 
         const
             allowRightPos = Array.from(this._el.value.matchAll(/\d/g)).at(-1)?.index + 1 || 0,
-            allowLeftPos = Math.max(this.options.mask.indexOf('_') || 0, 0),
+            allowLeftPos = Math.max(this.options.mask.indexOf(this.options.softCaret) || 0, 0),
             newPos = Math.max(Math.min(selectionStart, allowRightPos), allowLeftPos);
 
         if (selectionStart !== newPos) {
